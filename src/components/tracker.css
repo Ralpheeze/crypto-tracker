@@ -1,0 +1,94 @@
+/* General styles */
+body {
+    background-color: #121212;
+    color: white;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Container */
+  .tracker-container {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  /* Title */
+  .tracker-title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  /* Error message */
+  .tracker-error {
+    background-color: red;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  /* Loading text */
+  .tracker-loading {
+    color: yellow;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  /* Crypto grid */
+  .crypto-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+    max-width: 800px;
+    margin: auto;
+  }
+  
+  /* Crypto card */
+  .crypto-card {
+    background: #1e1e1e;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(255, 255, 255, 0.1);
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  
+  .crypto-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  /* Crypto price */
+  .crypto-price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #00ff00;
+    margin-top: 5px;
+  }
+  
+  /* Refresh button */
+  .tracker-button {
+    margin-top: 20px;
+    background-color: #007bff;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1rem;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+  }
+  
+  .tracker-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+  }
+  
+  .tracker-button:disabled {
+    background-color: gray;
+    cursor: not-allowed;
+  }
+
+  .stop-button {
+    margin-left: 1rem;
+  }
