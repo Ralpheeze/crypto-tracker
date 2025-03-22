@@ -1,172 +1,172 @@
 // //USESTATE MANAGEMENT
-import React, { useEffect, useRef, useState } from 'react'
+// import React, { useEffect, useRef, useState } from 'react'
 
-const Tracker = () => {
+// const Tracker = () => {
 
-    const [prices, setPrices] = useState({}); 
-    const [loading, setLoading] = useState(false); //loading indicates where a manual refresh is in progress
-    const [error, setError] = useState(null);
-    const [isUpdating, setIsUpdating] = useState(true); //contorls live updates
+//     const [prices, setPrices] = useState({}); 
+//     const [loading, setLoading] = useState(false); //loading indicates where a manual refresh is in progress
+//     const [error, setError] = useState(null);
+//     const [isUpdating, setIsUpdating] = useState(true); //contorls live updates
 
-    const socketRef = useRef(null); //this is going to be the reference to the websocket instance
+//     const socketRef = useRef(null); //this is going to be the reference to the websocket instance
 
-    const cryptos = [
-        "bitcoin",
-        "ethereum",
-        "dogecoin",
-        "cardano",
-        // "ripple",
-        "litecoin",
-        // "polkadot",
-        // "chainlink",
-        // "stellar",
-        // "uniswap",
-    ];
+//     const cryptos = [
+//         "bitcoin",
+//         "ethereum",
+//         "dogecoin",
+//         "cardano",
+//         // "ripple",
+//         "litecoin",
+//         // "polkadot",
+//         // "chainlink",
+//         // "stellar",
+//         // "uniswap",
+//     ];
 
-    // {bitcoin, ethereum, dogecoin, ...}
-    // console.log("socketRef", socketRef.current);
+//     // {bitcoin, ethereum, dogecoin, ...}
+//     // console.log("socketRef", socketRef.current);
 
-useEffect(() => {
-    if (!isUpdating) return; 
-    socketRef.current = new WebSocket(`wss://ws.coincap.io/prices?assets=${cryptos.join(",")}`);
-    //socketRef{{current: WebSocket()}
-        //      {current: WebSocket(.........................))}
-        //        }
-    socketRef.current.onopen = () => {
-        console.log("Connected to the socket");
-        setError(null); //clear any previous errors during the connection
+// useEffect(() => {
+//     if (!isUpdating) return; 
+//     socketRef.current = new WebSocket(`wss://ws.coincap.io/prices?assets=${cryptos.join(",")}`);
+//     //socketRef{{current: WebSocket()}
+//         //      {current: WebSocket(.........................))}
+//         //        }
+//     socketRef.current.onopen = () => {
+//         console.log("Connected to the socket");
+//         setError(null); //clear any previous errors during the connection
 
-    }
+//     }
 
-    socketRef.current.onmessage = (event) => {
-        const newPrices = JSON.parse(event.data);
-        console.log("Messages", event.data);
+//     socketRef.current.onmessage = (event) => {
+//         const newPrices = JSON.parse(event.data);
+//         console.log("Messages", event.data);
 
-        setPrices((prevPrices) => ({
-            ...prevPrices,
-            ...newPrices,
-        }));
-        //Spread operator
+//         setPrices((prevPrices) => ({
+//             ...prevPrices,
+//             ...newPrices,
+//         }));
+//         //Spread operator
 
-        // setPrices((prevPrices) => Object.assign({}, prevPrices, newPrices));
-    };
+//         // setPrices((prevPrices) => Object.assign({}, prevPrices, newPrices));
+//     };
 
-    socketRef.current.onerror = (error) => {
-        console.log("Websocket Error", error);
-        setError("Websocket connection failed. Please try again");
-    };
+//     socketRef.current.onerror = (error) => {
+//         console.log("Websocket Error", error);
+//         setError("Websocket connection failed. Please try again");
+//     };
 
-    socketRef.current.onclose = () => {
-        console.log("Disconnected from the socket");
-    };
+//     socketRef.current.onclose = () => {
+//         console.log("Disconnected from the socket");
+//     };
 
-        //cleanup function to close Websocket connection when the component unmounts
-    return () => socketRef.current?.close(); 
+//         //cleanup function to close Websocket connection when the component unmounts
+//     return () => socketRef.current?.close(); 
 
-}, [isUpdating]); //only runs when isUpdating changes
+// }, [isUpdating]); //only runs when isUpdating changes
 
-//Manual Refresh of the prices and resumes live updates
-const fetchPrices = () => {
-    setError(null);
-    // const newSocket = new WebSocket(`wss://ws.coincap.io/prices?assets=${cryptos.join(",")}`);
-    setLoading(true);
+// //Manual Refresh of the prices and resumes live updates
+// const fetchPrices = () => {
+//     setError(null);
+//     // const newSocket = new WebSocket(`wss://ws.coincap.io/prices?assets=${cryptos.join(",")}`);
+//     setLoading(true);
     
-    const newSocket = new WebSocket(`wss://ws.coincap.io/prices?assets=${cryptos.join(",")}`);
+//     const newSocket = new WebSocket(`wss://ws.coincap.io/prices?assets=${cryptos.join(",")}`);
 
-    newSocket.onmessage = (event) => {
-        const newPrices = JSON.parse(event.data);
-        console.log("Received prices from Manual Refresh: ", newPrices);
+//     newSocket.onmessage = (event) => {
+//         const newPrices = JSON.parse(event.data);
+//         console.log("Received prices from Manual Refresh: ", newPrices);
 
-        setPrices((prevPrices) => ({
-            ...prevPrices,
-            ...newPrices,
-        }));
+//         setPrices((prevPrices) => ({
+//             ...prevPrices,
+//             ...newPrices,
+//         }));
 
-        setLoading(false);
-        newSocket.close();
+//         setLoading(false);
+//         newSocket.close();
 
-        if(!isUpdating) {
-            console.log("Resuming live updates...");
-            setIsUpdating(true);
-        }
-    };
-    
-
-    // newSocket.onerror = (error) => {
-    //     console.error("Web socket error after Manual Refresh", error);
-    //     setError("The connection failed. Please try again")
-    //     setLoading(false);
-    //     newSocket.close();
-    // }
-
-    // newSocket.onclose = () => {
-    //     console.log("Disconnected from the socket afterManual Refresh");
-    // }
-    
+//         if(!isUpdating) {
+//             console.log("Resuming live updates...");
+//             setIsUpdating(true);
+//         }
+//     };
     
 
-    // if (!isUpdating) {
-    //     return;
-    // }
+//     // newSocket.onerror = (error) => {
+//     //     console.error("Web socket error after Manual Refresh", error);
+//     //     setError("The connection failed. Please try again")
+//     //     setLoading(false);
+//     //     newSocket.close();
+//     // }
 
-    // if (newSocket) {
-    //     stopUpdates();
-    // }
-}
+//     // newSocket.onclose = () => {
+//     //     console.log("Disconnected from the socket afterManual Refresh");
+//     // }
+    
+    
 
-//STOP UPDATES FUNCTION
-const stopUpdates = ()=> {
-    setIsUpdating(false);
+//     // if (!isUpdating) {
+//     //     return;
+//     // }
 
-    if (socketRef.current) {
-        socketRef.current.close(); //close websocket
-        socketRef.current = null; //ensure it doesn't reconnect
-    }
-    // newSocket.onerror = (error) => {
-    //     console.error("Web socket error after Manual Refresh", error);
-    //     setError("The connection failed. Please try again")
-    //     setLoading(false);
-    //     newSocket.close();
-    // }
+//     // if (newSocket) {
+//     //     stopUpdates();
+//     // }
+// }
 
-    // newSocket.onclose = () => {
-    //     console.log("Disconnected from the socket afterManual Refresh");
-    // }
-    // if(!isUpdating ) return;
-    // console.log("Live updates stopped");
+// //STOP UPDATES FUNCTION
+// const stopUpdates = ()=> {
+//     setIsUpdating(false);
 
-};
+//     if (socketRef.current) {
+//         socketRef.current.close(); //close websocket
+//         socketRef.current = null; //ensure it doesn't reconnect
+//     }
+//     // newSocket.onerror = (error) => {
+//     //     console.error("Web socket error after Manual Refresh", error);
+//     //     setError("The connection failed. Please try again")
+//     //     setLoading(false);
+//     //     newSocket.close();
+//     // }
 
-    return (
+//     // newSocket.onclose = () => {
+//     //     console.log("Disconnected from the socket afterManual Refresh");
+//     // }
+//     // if(!isUpdating ) return;
+//     // console.log("Live updates stopped");
 
-    <div className="tracker-container">
-        <h2 className="tracker-title">Crypto Price Tracker</h2>
+// };
 
-        {error && <p className="tracker-error">{error}</p>}
+//     return (
 
-        {loading && <p className="tracker-loading">Fetching latest prices...</p>}
+//     <div className="tracker-container">
+//         <h2 className="tracker-title">Crypto Price Tracker</h2>
 
-        <div className="crypto-grid">
-            {cryptos.map((crypto) => (
-            <div key={crypto} className="crypto-card">
-                <h3>{crypto.charAt(0).toUpperCase() + crypto.slice(1)}</h3>
-                <p className="crypto-price">${prices[crypto] || "Fetching..."}</p>
-            </div>
-            ))}
-        </div>
+//         {error && <p className="tracker-error">{error}</p>}
 
-      <button onClick={fetchPrices} className="tracker-button" disabled={loading}>
-        🔄 Refresh Prices
-      </button>
+//         {loading && <p className="tracker-loading">Fetching latest prices...</p>}
 
-      <button onClick={stopUpdates} className="tracker-button stop-button">
-        🛑 Stop Updates
-      </button>
-    </div>
-  );
-};
+//         <div className="crypto-grid">
+//             {cryptos.map((crypto) => (
+//             <div key={crypto} className="crypto-card">
+//                 <h3>{crypto.charAt(0).toUpperCase() + crypto.slice(1)}</h3>
+//                 <p className="crypto-price">${prices[crypto] || "Fetching..."}</p>
+//             </div>
+//             ))}
+//         </div>
 
-export default Tracker
+//       <button onClick={fetchPrices} className="tracker-button" disabled={loading}>
+//         🔄 Refresh Prices
+//       </button>
+
+//       <button onClick={stopUpdates} className="tracker-button stop-button">
+//         🛑 Stop Updates
+//       </button>
+//     </div>
+//   );
+// };
+
+// export default Tracker
 
 
 
@@ -305,151 +305,151 @@ export default Tracker
 
 //CORRECT ONE USING USESTATE
 
-// import { useState, useEffect, useRef } from "react";
-// import "./Tracker.css"; // Import the CSS file
+import { useState, useEffect, useRef } from "react";
+import "./Tracker.css"; // Import the CSS file
 
-// const Tracker = () => {
-//   const [prices, setPrices] = useState({});
-//   const [loading, setLoading] = useState(false); //loading indicates where a manual refresh is in progress. 
-//   const [error, setError] = useState(null);
-//   const [isUpdating, setIsUpdating] = useState(true); // Controls live updates
+const Tracker = () => {
+  const [prices, setPrices] = useState({});
+  const [loading, setLoading] = useState(false); //loading indicates where a manual refresh is in progress. 
+  const [error, setError] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(true); // Controls live updates
 
 
-//   const socketRef = useRef(null); // Reference to WebSocket instance
+  const socketRef = useRef(null); // Reference to WebSocket instance
 
-//   const cryptos = [
-//     "bitcoin",
-//     "ethereum",
-//     "dogecoin",
-//     "cardano",
-//     // "ripple",
-//     "litecoin",
-//     // "polkadot",
-//     // "chainlink",
-//     // "stellar",
-//     // "uniswap",
-//   ];
+  const cryptos = [
+    "bitcoin",
+    "ethereum",
+    "dogecoin",
+    "cardano",
+    "ripple",
+    "litecoin",
+    "polkadot",
+    "chainlink",
+    "stellar",
+    // "uniswap",
+  ];
 
-//   useEffect(() => {
-//     // console.log("ref", socketRef);
-//     if (!isUpdating) return; // Stop execution if updates are disabled
-//     //it stops the effect from running when isUpdating is false because 
-//     // it returns nothing, preventing a newWebSocket from being opened.
-//     //To properly 
+  useEffect(() => {
+    // console.log("ref", socketRef);
+    if (!isUpdating) return; // Stop execution if updates are disabled
+    //it stops the effect from running when isUpdating is false because 
+    // it returns nothing, preventing a newWebSocket from being opened.
+    //To properly 
 
     
-//     socketRef.current = new WebSocket(`wss://ws.coincap.io/prices?assets=${cryptos.join(",")}`);
+    socketRef.current = new WebSocket(`wss://ws.coincap.io/prices?assets=${cryptos.join(",")}`);
     
-//     socketRef.current.onopen = () => {
-//         console.log("WebSocket Connected.");
-//         setError(null); // Clear previous error
-//         };
+    socketRef.current.onopen = () => {
+        console.log("WebSocket Connected.");
+        setError(null); // Clear previous error
+        };
 
-//     socketRef.current.onmessage = (event) => {
-//       const newPrices = JSON.parse(event.data);
-//       console.log("Received Prices:", newPrices);
+    socketRef.current.onmessage = (event) => {
+      const newPrices = JSON.parse(event.data);
+      console.log("Received Prices:", newPrices);
 
-//       setPrices((prevPrices) => ({
-//         ...prevPrices,
-//         ...newPrices,
-//       }));
-//     // setPrices((prevPrices) => Object.assign({}, prevPrices, newPrices));
-//     };
+      setPrices((prevPrices) => ({
+        ...prevPrices,
+        ...newPrices,
+      }));
+    // setPrices((prevPrices) => Object.assign({}, prevPrices, newPrices));
+    };
 
-//     socketRef.current.onerror = (error) => {
-//       console.error("WebSocket Error:", error);
-//       setError("WebSocket connection failed. Please try again.");
-//     };
+    socketRef.current.onerror = (error) => {
+      console.error("WebSocket Error:", error);
+      setError("WebSocket connection failed. Please try again.");
+    };
 
-//     socketRef.current.onclose = () => {
-//       console.log("WebSocket Closed.");
-//     };
+    socketRef.current.onclose = () => {
+      console.log("WebSocket Closed.");
+    };
 
-//     // Cleanup function to close WebSocket when component unmounts or updates stop
-//     return () => socketRef.current?.close();
-//     //this closes the websocket connection and the old connection is removed
-//   }, [isUpdating]); // Only runs when `isUpdating` changes from true to false
+    // Cleanup function to close WebSocket when component unmounts or updates stop
+    return () => socketRef.current?.close();
+    //this closes the websocket connection and the old connection is removed
+  }, [isUpdating]); // Only runs when `isUpdating` changes from true to false
 
-//   //Manual Refresh Function (Also Resumes Live Updates)
-//   const fetchPrices = () => {
-//     setLoading(true);
-//     setError(null);
+  //Manual Refresh Function (Also Resumes Live Updates)
+  const fetchPrices = () => {
+    setLoading(true);
+    setError(null);
 
-//     const tempSocket = new WebSocket(`wss://ws.coincap.io/prices?assets=${cryptos.join(",")}`);
-//     //.join(",") converts the cryptos array into a comma-separated string
+    const tempSocket = new WebSocket(`wss://ws.coincap.io/prices?assets=${cryptos.join(",")}`);
+    //.join(",") converts the cryptos array into a comma-separated string
 
-//     tempSocket.onmessage = (event) => {
-//       const newPrices = JSON.parse(event.data);
-//       console.log("Received Prices (Manual Refresh):", newPrices);
+    tempSocket.onmessage = (event) => {
+      const newPrices = JSON.parse(event.data);
+      console.log("Received Prices (Manual Refresh):", newPrices);
 
-//       setPrices((prevPrices) => ({
-//         ...prevPrices,
-//         ...newPrices,
-//       }));
+      setPrices((prevPrices) => ({
+        ...prevPrices,
+        ...newPrices,
+      }));
 
-//       setLoading(false);
-//       tempSocket.close();
+      setLoading(false);
+      tempSocket.close();
 
-//       // 🔥 Resume live updates if they were stopped
-//       if (!isUpdating) {
-//         console.log("Resuming live updates...");
-//         setIsUpdating(true);
-//       }
-//     };
+      // 🔥 Resume live updates if they were stopped
+      if (!isUpdating) {
+        console.log("Resuming live updates...");
+        setIsUpdating(true);
+      }
+    };
 
-//     tempSocket.onerror = (error) => {
-//       console.error("WebSocket Error (Manual Refresh):", error);
-//       setError("WebSocket connection failed. Please try again.");
-//       setLoading(false);
-//       tempSocket.close();
-//     };
+    tempSocket.onerror = (error) => {
+      console.error("WebSocket Error (Manual Refresh):", error);
+      setError("WebSocket connection failed. Please try again.");
+      setLoading(false);
+      tempSocket.close();
+    };
 
-//     tempSocket.onclose = () => {
-//       console.log("Manual Refresh ...TheWebSocket Closed.");
-//     };
-//   };
+    tempSocket.onclose = () => {
+      console.log("Manual Refresh ...TheWebSocket Closed.");
+    };
+  };
 
-//   // Stop updates and keep the last received prices
-//   const stopUpdates = () => {
-//     setIsUpdating(false);
-//     if (socketRef.current) {
-//       socketRef.current.close(); // Close WebSocket
-//       socketRef.current = null; // Ensure it doesn't reconnect
-//     }
-//     console.log("Live updates stopped.");
-//   };
+  // Stop updates and keep the last received prices
+  const stopUpdates = () => {
+    setIsUpdating(false);
+    if (socketRef.current) {
+      socketRef.current.close(); // Close WebSocket
+      socketRef.current = null; // Ensure it doesn't reconnect
+    }
+    console.log("Live updates stopped.");
+  };
 
-//   return (
-//     <div className="tracker-container">
-//       <h2 className="tracker-title">Crypto Price Tracker</h2>
+  return (
+    <div className="tracker-container">
+      <h2 className="tracker-title">Crypto Price Tracker</h2>
 
-//       {error && <p className="tracker-error">{error}</p>}
+      {error && <p className="tracker-error">{error}</p>}
 
-//       {/* {loading && <p className="tracker-loading">Fetching latest prices...</p>} */}
-//       {loading ? <p className="tracker-loading">Fetching latest prices...</p> : <p>Prices loaded</p>}
+      {/* {loading && <p className="tracker-loading">Fetching latest prices...</p>} */}
+      {loading ? <p className="tracker-loading">Fetching latest prices...</p> : <p>Prices loaded</p>}
 
 
-//       <div className="crypto-grid">
-//         {cryptos.map((crypto) => (
-//           <div key={crypto} className="crypto-card">
-//             <h3>{crypto.charAt(0).toUpperCase() + crypto.slice(1)}</h3>
-//             <p className="crypto-price">${prices[crypto] || "Fetching..."}</p>
-//           </div>
-//         ))}
-//       </div>
+      <div className="crypto-grid">
+        {cryptos.map((crypto) => (
+          <div key={crypto} className="crypto-card">
+            <h3>{crypto.charAt(0).toUpperCase() + crypto.slice(1)}</h3>
+            <p className="crypto-price">${prices[crypto] || "Fetching..."}</p>
+          </div>
+        ))}
+      </div>
 
-//       <button onClick={fetchPrices} className="tracker-button" disabled={loading}>
-//         🔄 Refresh Prices
-//       </button>
+      <button onClick={fetchPrices} className="tracker-button" disabled={loading}>
+        🔄 Refresh Prices
+      </button>
 
-//       <button onClick={stopUpdates} className="tracker-button stop-button">
-//         🛑 Stop Updates
-//       </button>
-//     </div>
-//   );
-// };
+      <button onClick={stopUpdates} className="tracker-button stop-button">
+        🛑 Stop Updates
+      </button>
+    </div>
+  );
+};
 
-// export default Tracker;
+export default Tracker;
 
 
 
