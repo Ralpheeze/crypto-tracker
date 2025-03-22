@@ -306,7 +306,7 @@
 //CORRECT ONE USING USESTATE
 
 import { useState, useEffect, useRef } from "react";
-import "./Tracker.css"; // Import the CSS file
+import "./tracker.css"; // Import the CSS file
 
 const Tracker = () => {
   const [prices, setPrices] = useState({});
